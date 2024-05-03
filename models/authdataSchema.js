@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const plm = require("passport-local-mongoose")
+
 
 
 const authmodel = new mongoose.Schema({
@@ -33,9 +35,14 @@ const authmodel = new mongoose.Schema({
     timestamps : true
 })
 
+
+authmodel.plugin(plm);
+
+
 const user = mongoose.model("user" , authmodel);
+
+
 
 module.exports = user;
 
 
-// model.plugin(plm);
