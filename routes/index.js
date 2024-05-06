@@ -29,32 +29,38 @@ router.get('/login', function(req, res, next) {
   res.render('login');
 });
 
-router.post("/loginuser" , async (req,res)=> {
+// router.post("/loginuser" , async (req,res)=> {
 
-  res.render('profile');
-});
+//   res.render('profile');
+// });
 
 
 
   // -- after passport 
 
-  // router.post("/loginuser" ,
-  // passport.authenticate("local", {
+  router.post("/loginuser" ,
+  passport.authenticate("local", {
   
-  //    successRedirect :"/login", 
-  //   failureRedirect :'/register', 
-  // })
-  // ,  (req,res,next)=> {
+     successRedirect :"/profile", 
+    failureRedirect :'/login', 
+  })
+  ,  (req,res,next)=> {
 
-  //  if (req.isAuthenticated()) {
-  //   // next();
-  //   console.log("hogaya")
-  //  } else {
-  //   console.log("nih hoga")
-  //  }
 
  
-  //   });
+    });
+
+
+function isLoggedin(req,res,next){
+  if (req.isAuthenticated()) {
+    next();
+    console.log("hogaya")
+   } else {
+    console.log("nih hoga")
+    res.redirect("/login")
+   }
+
+}
 
   // -- after passport 
 
@@ -109,6 +115,18 @@ router.get('/about', function(req, res, next) {
 // --- about ---
 
 
+router.get("/logout" ,function(req,res,next) {
+req.logOut(()=>{
+  res.redirect("/login")
+})
+})
+
+
+
+
+router.get('/profile',isLoggedin , function(req, res, next) {
+  res.render('profile');
+});
 
 
 module.exports = router;
