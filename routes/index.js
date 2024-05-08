@@ -4,19 +4,20 @@ var router = express.Router();
 
 const user = require("../models/authdataSchema");
 
-// passport
+// --- passport ---
 
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
 passport.use(new LocalStrategy(user.authenticate()));
 
-// passport
+// ---  passport ---
+
 
 // --- home ---
 
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', {user : req.user});
 });
 
 // --- home ---
@@ -26,7 +27,7 @@ router.get('/', function(req, res, next) {
 // --- login ---
 
 router.get('/login', function(req, res, next) {
-  res.render('login');
+  res.render('login' ,{user : req.user});
 });
 
 // router.post("/loginuser" , async (req,res)=> {
@@ -48,7 +49,9 @@ router.get('/login', function(req, res, next) {
 
 
  
-    });
+    });  
+
+ // --- middilway ---
 
 
 function isLoggedin(req,res,next){
@@ -62,7 +65,11 @@ function isLoggedin(req,res,next){
 
 }
 
-  // -- after passport 
+ // --- middilway ---
+
+
+
+// -- after passport 
 
 
 
@@ -75,7 +82,7 @@ function isLoggedin(req,res,next){
 
 
 router.get('/register', function(req, res, next) {
-  res.render('register');
+  res.render('register' ,{user : req.user});
 });
 
 router.post('/regiteruser', async  function(req, res, next) {
@@ -109,11 +116,13 @@ router.post('/regiteruser', async  function(req, res, next) {
 // --- about ---
 
 router.get('/about', function(req, res, next) {
-  res.render('about');
+  res.render('about',{user : req.user});
 });
 
 // --- about ---
 
+
+//  --- logout ---
 
 router.get("/logout" ,function(req,res,next) {
 req.logOut(()=>{
@@ -121,12 +130,26 @@ req.logOut(()=>{
 })
 })
 
+//  --- logout ---
 
 
+
+// --- profile ----
 
 router.get('/profile',isLoggedin , function(req, res, next) {
-  res.render('profile');
+  res.render('profile',{user : req.user});
 });
 
+// --- profile ---- 
+
+
+// --- updata-user ---
+
+router.get("/update-user/:_id" , function(req,res){
+  
+  res.render("updateuser",{user : req.user})
+})
+
+// --- updata-user ---
 
 module.exports = router;
