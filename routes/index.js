@@ -152,4 +152,53 @@ router.get("/update-user/:_id" , function(req,res){
 
 // --- updata-user ---
 
+
+// --- reset password --- 
+
+router.get("/reset-password" , async function(req,res){
+//   try {
+//     await req.user.changePassword(
+//         req.body.oldpassword,
+//         req.body.newpassword
+//     );
+//     await req.user.save();
+//     res.redirect("/profile");
+// } catch (error) {
+//     res.send(error);
+// }
+  res.send("reset password")
+})
+
+// --- reset password --- 
+
+
+// --- delete account --- 
+
+router.get("/delete-account" , function(req,res){
+  res.send("delete account");
+});
+
+// --- delete account --- 
+
+// --- forget password ---
+
+router.get("/forgat" , async function(req,res){
+//   try {
+//     const user = await User.findOne({ username: req.body.username });
+//     if (!user)
+//         return res.send("User not found! <a href='/forget'>Try Again</a>.");
+
+//     await user.setPassword(req.body.newpassword);
+//     await user.save();
+//     res.redirect("/signin");
+// } catch (error) {
+//     res.send(error);
+// }
+ res.send("enter new password");
+
+});
+
+// --- forget password ---
+
+
 module.exports = router;
