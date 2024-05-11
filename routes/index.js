@@ -145,7 +145,12 @@ router.get('/profile',isLoggedin , function(req, res, next) {
 
 // --- updata-user ---
 
-router.get("/update-user/:_id" , function(req,res){
+router.get("/update-user/:_id" ,isLoggedin , function(req,res){
+  
+  res.render("updateuser",{user : req.user})
+})
+
+router.post("/update-user/:_id" ,isLoggedin , function(req,res){
   
   res.render("updateuser",{user : req.user})
 })
@@ -155,7 +160,7 @@ router.get("/update-user/:_id" , function(req,res){
 
 // --- reset password --- 
 
-router.get("/reset-password" , async function(req,res){
+router.get("/reset-password/:_id" ,isLoggedin , async function(req,res){
 //   try {
 //     await req.user.changePassword(
 //         req.body.oldpassword,
@@ -166,15 +171,40 @@ router.get("/reset-password" , async function(req,res){
 // } catch (error) {
 //     res.send(error);
 // }
-  res.send("reset password")
+  res.render("resetipassword" ,{user : req.user})
 })
+
+
+router.post("/reset-password/:_id" ,isLoggedin , async function(req,res){
+  try {
+    await req.user.changePassword(
+      req.body.oldpassword, 
+      req.body.newpassword
+    )
+    await req.user.save();
+    res.redirect(`/update-user/${req.user._id}`)
+  } catch (error) {
+    res.send(error)
+  }
+  //   try {
+  //     await req.user.changePassword(
+  //         req.body.oldpassword,
+  //         req.body.newpassword
+  //     );
+  //     await req.user.save();
+  // res.redirect(`/update-user/${req.user._id}`)
+  //     // res.redirect("/profile");
+  // } catch (error) {
+  //     res.send(error);
+  // }
+  })
 
 // --- reset password --- 
 
 
 // --- delete account --- 
 
-router.get("/delete-account" , function(req,res){
+router.get("/delete-account" ,isLoggedin , function(req,res){
   res.send("delete account");
 });
 
@@ -182,7 +212,7 @@ router.get("/delete-account" , function(req,res){
 
 // --- forget password ---
 
-router.get("/forgat" , async function(req,res){
+router.get("/forget" , async function(req,res){
 //   try {
 //     const user = await User.findOne({ username: req.body.username });
 //     if (!user)

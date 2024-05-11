@@ -53,9 +53,9 @@
 
 <div
   class=" flex flex-col justify-around items-center rounded-xl fixed right-[15%] top-[50%] translate-y-[-50%]   h-[50%] py-3 px-5 border-[2px] border-yellow-500 text-2xl text-white">
-  <a  href="/reset-password"><h4 class="text-yellow-400 text-xl textcursor-pointer">Reset password</h4></a>
+  <a  href="/reset-password/<%= user._id %>"><h4 class="text-yellow-400 text-xl textcursor-pointer">Reset password</h4></a>
   <a href="/delete-account"><h4 class="text-yellow-400 text-xl cursor-pointer">Delete Accont</h4></a>
-  <a href=""><h4 class="text-yellow-400 text-xl cursor-pointer">Delete Accont</h4></a>
+  <a href="/forget"><h4 class="text-yellow-400 text-xl cursor-pointer">forget</h4></a>
   <!-- <i class="ri-search-line text-blue-400 cursor-pointer"></i>
   <i class="ri-add-large-line text-blue-400 cursor-pointer"></i>
   <a href="/update-user/<%= user._id %>" class="ri-user-fill text-blue-400 cursor-pointer"></a> -->
