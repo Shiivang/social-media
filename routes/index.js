@@ -145,12 +145,12 @@ router.get('/profile',isLoggedin , function(req, res, next) {
 
 // --- updata-user ---
 
-router.get("/update-user/:_id" ,isLoggedin , function(req,res){
+router.get("/update-user/:id" ,isLoggedin , function(req,res){
   
   res.render("updateuser",{user : req.user})
 })
 
-router.post("/update-user/:_id" ,isLoggedin , function(req,res){
+router.post("/update-user/:id" ,isLoggedin , function(req,res){
   
   res.render("updateuser",{user : req.user})
 })
@@ -160,7 +160,7 @@ router.post("/update-user/:_id" ,isLoggedin , function(req,res){
 
 // --- reset password --- 
 
-router.get("/reset-password/:_id" ,isLoggedin , async function(req,res){
+router.get("/reset-password/:id" ,isLoggedin , async function(req,res){
 //   try {
 //     await req.user.changePassword(
 //         req.body.oldpassword,
@@ -175,7 +175,7 @@ router.get("/reset-password/:_id" ,isLoggedin , async function(req,res){
 })
 
 
-router.post("/reset-password/:_id" ,isLoggedin , async function(req,res){
+router.post("/reset-password/:id" ,isLoggedin , async function(req,res){
   try {
     await req.user.changePassword(
       req.body.oldpassword, 
@@ -212,23 +212,48 @@ router.get("/delete-account" ,isLoggedin , function(req,res){
 
 // --- forget password ---
 
-router.get("/forget" , async function(req,res){
-//   try {
-//     const user = await User.findOne({ username: req.body.username });
-//     if (!user)
-//         return res.send("User not found! <a href='/forget'>Try Again</a>.");
+router.get("/forget" ,  function(req,res){
 
-//     await user.setPassword(req.body.newpassword);
-//     await user.save();
-//     res.redirect("/signin");
-// } catch (error) {
-//     res.send(error);
-// }
- res.send("enter new password");
+ res.render("forget" , {user : req.user});
 
 });
 
-// --- forget password ---
+router.post("/forgetpassword" , async function(req,res){
+  try {
 
+    
+        const User = await user.findOne({ email: req.body.email });
+        if(User){
+          console.log("chalgaya")
+          res.redirect(`/forget-password/${User._id}`);
+        }else{
+          res.redirect("/forget")
+        }
+       
+      
+    } catch (error) {
+        res.send(error);
+        
+    }
+})
+
+
+router.get("/forget-password/:id" , function(req,res){
+  res.render("forgetpassward" , {user : req.user , id : req.params.id});
+})
+
+
+router.post("/forget-password/:id" , async function(req,res){
+  try {
+    const User = await user.findById( req.params.id);
+    await User.setPassword(req.body.password);
+    await User.save();
+    res.redirect("/login")  
+} catch (error) {
+    res.send(error);
+}
+})
+
+// --- forget password ---
 
 module.exports = router;
