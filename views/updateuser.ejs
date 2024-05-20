@@ -7,9 +7,18 @@
 
   <!-- edit page content -->
 
-  <div class="w-1/2 m-auto flex justify-center mb-10 h-[10vh] ">
-    <img class="w-[13%] h-full rounded-full bg-yellow-300 object-cover" src="https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBvdHJhaXR8ZW58MHx8MHx8fDA%3D" alt="">
+  <!-- image  -->
+
+
+  <form class="hidden in-img" action="/change-image" method="post" enctype="multipart/form-data">
+    <input class="new-image" type="file" name="newimage" >  </form>
+
+  <div class="  w-1/2 m-auto flex justify-center mb-10 h-[10vh] ">
+    <img class="old-image w-[13%] h-full rounded-full bg-yellow-300 object-cover" src="<%= user.profileimage %>" alt="">
   </div>
+
+  
+  <!-- image  -->
 
 
   <h1 class="text-center text-8xl font-extrabold text-yellow-200 drop-shadow-2xl">Edit Profile</h1>
@@ -54,7 +63,7 @@
 <div
   class=" flex flex-col justify-around items-center rounded-xl fixed right-[15%] top-[50%] translate-y-[-50%]   h-[50%] py-3 px-5 border-[2px] border-yellow-500 text-2xl text-white">
   <a  href="/reset-password/<%= user._id %>"><h4 class="text-yellow-400 text-xl textcursor-pointer">Reset password</h4></a>
-  <a href="/delete-account"><h4 class="text-yellow-400 text-xl cursor-pointer">Delete Accont</h4></a>
+  <a href="/delete-account/<%= user._id %>"><h4 class="text-yellow-400 text-xl cursor-pointer">Delete Accont</h4></a>
   <a href="/forget"><h4 class="text-yellow-400 text-xl cursor-pointer">forget</h4></a>
   <!-- <i class="ri-search-line text-blue-400 cursor-pointer"></i>
   <i class="ri-add-large-line text-blue-400 cursor-pointer"></i>
@@ -63,4 +72,24 @@
 
 <!-- hero -->
 
+<!-- js -->
+
+<script>
+  const new_image =  document.querySelector(".new-image");
+  const old_image =  document.querySelector(".old-image");
+  const in_image =  document.querySelector(".in-img");
+
+
+  old_image.addEventListener("click" ,()=> {
+    new_image.click();
+  })
+  new_image.addEventListener("change" ,()=> {
+    in_image.submit();
+  })
+
+
+</script>
+
+
+<!-- js -->
   <%- include("parcials/footer")%>

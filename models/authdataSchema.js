@@ -6,6 +6,11 @@ const plm = require("passport-local-mongoose")
 
 const authmodel = new mongoose.Schema({
 
+    profileimage : {
+        type : String ,
+        default : "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?size=338&ext=jpg&ga=GA1.1.553209589.1714953600&semt=ais"
+    } ,
+
     name: {
         type : String , 
         trim: true ,

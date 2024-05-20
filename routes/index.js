@@ -233,7 +233,6 @@ router.post("/forgetpassword" , async function(req,res){
       
     } catch (error) {
         res.send(error);
-        
     }
 })
 
@@ -255,5 +254,7 @@ router.post("/forget-password/:id" , async function(req,res){
 })
 
 // --- forget password ---
+
+// router
 
 module.exports = router;
