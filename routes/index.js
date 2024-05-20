@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+const uploads = require("../utils/multer").single("profileimage");
 
 const user = require("../models/authdataSchema");
 
@@ -124,7 +125,7 @@ router.get('/about', function(req, res, next) {
 
 //  --- logout ---
 
-router.get("/logout" ,function(req,res,next) {
+router.get("/logout" ,isLoggedin,function(req,res,next) {
 req.logOut(()=>{
   res.redirect("/login")
 })
@@ -150,9 +151,19 @@ router.get("/update-user/:id" ,isLoggedin , function(req,res){
   res.render("updateuser",{user : req.user})
 })
 
-router.post("/update-user/:id" ,isLoggedin , function(req,res){
-  
-  res.render("updateuser",{user : req.user})
+router.post("/edit/:id" ,isLoggedin , async function(req,res){
+  try {
+
+    console.log("hagayaaaaaaaa")
+
+    const newUser = await user.findByIdAndUpdate(req.params.id,req.body);
+    await newUser.save();
+    res.redirect("/update-user/:id");
+    
+  } catch (error) {
+    
+  }
+ 
 })
 
 // --- updata-user ---
@@ -204,9 +215,22 @@ router.post("/reset-password/:id" ,isLoggedin , async function(req,res){
 
 // --- delete account --- 
 
-router.get("/delete-account" ,isLoggedin , function(req,res){
-  res.send("delete account");
-});
+
+
+router.get("/delete-account/:id" ,async (req,res)=>{
+
+  try {
+
+    await user.findByIdAndDelete(req.params.id);
+
+    res.redirect("/login")
+    
+  } catch (error) {
+    console.log(error)
+  }
+
+})
+
 
 // --- delete account --- 
 
@@ -255,6 +279,28 @@ router.post("/forget-password/:id" , async function(req,res){
 
 // --- forget password ---
 
-// router
+// --- change profile image ---
+
+router.post("/change-image/:id" , async (req,res)=>{
+
+  // res.json(req.body);
+  try {
+
+    
+
+
+    // const newUser = await user({ profileimage: req.file.filename});
+    // await newUser.save();
+    // console.log('hlgdsiul')
+    // res.redirect("/update-user/:id");
+
+    
+  } catch (error) {
+    console.log(error)
+  }
+
+})
+
+// --- change profile image ---
 
 module.exports = router;
