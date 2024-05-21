@@ -3,6 +3,9 @@ var router = express.Router();
 
 const uploads = require("../utils/multer").single("profileimage");
 
+const fs = require("fs");
+const path = require("path")
+
 const user = require("../models/authdataSchema");
 
 // --- passport ---
@@ -281,19 +284,20 @@ router.post("/forget-password/:id" , async function(req,res){
 
 // --- change profile image ---
 
-router.post("/change-image/:id" , async (req,res)=>{
+router.post("/change-image/:id" ,isLoggedin, uploads, async (req,res)=>{
 
   // res.json(req.body);
   try {
+    if (req.user.profileimage !== "default.png" ){
 
-    
+      fs.unlinkSync(path.join(__dirname,".." , "public" , 'images' , req.user.profileimage))
 
+    }
 
-    // const newUser = await user({ profileimage: req.file.filename});
-    // await newUser.save();
-    // console.log('hlgdsiul')
-    // res.redirect("/update-user/:id");
+  req.user.profileimage = req.file.filename ;
+    await req.user.save();
 
+    res.redirect(`/update-user/${req.params.id}`);
     
   } catch (error) {
     console.log(error)
