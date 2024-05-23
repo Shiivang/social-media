@@ -61,9 +61,7 @@ router.get('/login', function(req, res, next) {
 function isLoggedin(req,res,next){
   if (req.isAuthenticated()) {
     next();
-    console.log("hogaya")
    } else {
-    console.log("nih hoga")
     res.redirect("/login")
    }
 
@@ -157,8 +155,7 @@ router.get("/update-user/:id" ,isLoggedin , function(req,res){
 router.post("/edit/:id" ,isLoggedin , async function(req,res){
   try {
 
-    console.log("hagayaaaaaaaa")
-
+   
     const newUser = await user.findByIdAndUpdate(req.params.id,req.body);
     await newUser.save();
     res.redirect("/update-user/:id");
@@ -224,7 +221,13 @@ router.get("/delete-account/:id" ,async (req,res)=>{
 
   try {
 
-    await user.findByIdAndDelete(req.params.id);
+    const deleteuser = await user.findByIdAndDelete(req.params.id);
+    if (deleteuser.profileimage !== "default.jpg" ){
+
+      fs.unlinkSync(path.join(__dirname,".." , "public" , 'images' , req.user.profileimage))
+
+    }
+
 
     res.redirect("/login")
     
@@ -288,7 +291,7 @@ router.post("/change-image/:id" ,isLoggedin, uploads, async (req,res)=>{
 
   // res.json(req.body);
   try {
-    if (req.user.profileimage !== "default.png" ){
+    if (req.user.profileimage !== "default.jpg" ){
 
       fs.unlinkSync(path.join(__dirname,".." , "public" , 'images' , req.user.profileimage))
 

@@ -14,8 +14,12 @@
     <input class="new-image" type="file" name="profileimage" >  </form>
     
 
-  <div class="  w-1/2 m-auto flex justify-center mb-10 h-[10vh] ">
+  <div class="  w-1/2 m-auto flex justify-center gap-x-10	 mb-10 h-[10vh] ">
     <img class="old-image w-[13%] h-full rounded-full bg-yellow-300 object-cover" src="/images/<%= user.profileimage %>" alt="">
+    <div class="   ">
+      <h2 class="text-center text-5xl  text-yellow-200 "><%= user.name%></h2>
+      <h3 class="text-center  text-3xl  text-yellow-200 ">@<%= user.username %></h3>
+    </div>
   </div>
 
   

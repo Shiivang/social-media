@@ -8,7 +8,7 @@ const authmodel = new mongoose.Schema({
 
     profileimage : {
         type : String ,
-        default : "default.png",
+        default : "default.jpg",
     } ,
 
     name: {
