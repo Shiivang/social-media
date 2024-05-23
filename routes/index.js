@@ -8,6 +8,8 @@ const path = require("path")
 
 const user = require("../models/authdataSchema");
 
+const sendmail = require("../utils/mail");
+
 // --- passport ---
 
 const passport = require('passport');
@@ -253,9 +255,12 @@ router.post("/forgetpassword" , async function(req,res){
 
     
         const User = await user.findOne({ email: req.body.email });
+
         if(User){
-          console.log("chalgaya")
-          res.redirect(`/forget-password/${User._id}`);
+        
+          // res.redirect(`/forget-password/${User._id}`);
+          sendmail(res , req.body.email , User);
+
         }else{
           res.redirect("/forget")
         }
@@ -275,8 +280,17 @@ router.get("/forget-password/:id" , function(req,res){
 router.post("/forget-password/:id" , async function(req,res){
   try {
     const User = await user.findById( req.params.id);
-    await User.setPassword(req.body.password);
-    await User.save();
+
+    if (User.resetPasswordToken == 1) {
+      
+      await User.setPassword(req.body.password);
+      User.resetPasswordToken = 0 ;
+      await User.save();
+      
+    } else {
+      res.send("Link Expired Try Again!");
+    }
+   
     res.redirect("/login")  
 } catch (error) {
     res.send(error);
