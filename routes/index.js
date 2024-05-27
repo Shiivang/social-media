@@ -14,6 +14,7 @@ const sendmail = require("../utils/mail");
 
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const { send } = require('process');
 
 passport.use(new LocalStrategy(user.authenticate()));
 
@@ -94,14 +95,17 @@ router.post('/regiteruser', async  function(req, res, next) {
   // after passport -----
 
   try {
+
     const {name , username , email , password } = req.body;
     await user.register({name , username , email} , password);
     res.redirect('/login');
+    
    } catch (error) {
     res.send(error)
    }
 
 // before passport---------
+
    
 //  try {
 //   const newUser = new user(req.body);
@@ -323,5 +327,30 @@ router.post("/change-image/:id" ,isLoggedin, uploads, async (req,res)=>{
 })
 
 // --- change profile image ---
+
+
+// --- add post ---
+
+router.get("/Add_Post" , isLoggedin,async  (req,res)=>{
+  try {
+
+   res.render("Addpost",{user : req.user});
+    
+  } catch (error) {
+    res.send(error);
+    
+  }
+})
+
+router.post("/Add_post", isLoggedin, async (req,res)=>{
+  try {
+    
+  } catch (error) {
+    
+  }
+})
+
+// --- add post ---
+
 
 module.exports = router;

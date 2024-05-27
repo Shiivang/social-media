@@ -35,6 +35,9 @@ const authmodel = new mongoose.Schema({
 
     },
     password: String ,
+
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }],
+    
     resetPasswordToken: {
         type: Number,
         default: 0,
