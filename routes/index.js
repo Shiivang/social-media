@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-const uploads = require("../utils/multer").single("profileimage");
+const uploads = require("../utils/multer");
 
 const fs = require("fs");
 const path = require("path")
 
 const user = require("../models/authdataSchema");
+const Post = require("../models/postSchema");
 
 const sendmail = require("../utils/mail");
 
@@ -15,6 +16,7 @@ const sendmail = require("../utils/mail");
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const { send } = require('process');
+const { error } = require('console');
 
 passport.use(new LocalStrategy(user.authenticate()));
 
@@ -119,6 +121,17 @@ router.post('/regiteruser', async  function(req, res, next) {
 
 // --- register ---
 
+// --- timeline ---
+
+router.get("/timeline" ,isLoggedin, async (req,res)=>{
+try {
+  res.render("timeline" ,{ user : await req.user.populate("posts")});
+} catch (error) {
+  res.send(error);
+}} )
+
+// --- timeline ---
+
 
 
 // --- about ---
@@ -144,11 +157,66 @@ req.logOut(()=>{
 
 // --- profile ----
 
-router.get('/profile',isLoggedin , function(req, res, next) {
-  res.render('profile',{user : req.user});
+router.get('/profile',isLoggedin ,async function(req, res, next) {
+try {
+  const posts = await Post.find().populate("user");
+  // console.log(posts); 
+
+
+  res.render('profile', {user : req.user , posts});
+} catch (error) {
+  console.log(error)
+}
 });
 
 // --- profile ---- 
+
+
+// --- delete post ---
+
+router.get("/delete-post/:id" , isLoggedin , async (req,res)=>{
+  try {
+
+    const deletepost = await Post.findByIdAndDelete(req.params.id);
+
+    fs.unlinkSync(path.join(__dirname , ".." , "public" , "images" , deletepost.media)) ;
+
+    res.redirect("/timeline");
+    
+  } catch (error) {
+    res.send(error);
+  }
+});
+
+// --- delete post ---
+
+// --- update-post --- 
+
+router.get("/update-post/:id" , isLoggedin , async (req,res)=> {
+try {
+
+ const post = await Post.findById(req.params.id);
+
+  res.render("updatepost" , {
+   post , user : req.user 
+  })
+  
+} catch (error) {
+  res.send(error);
+}
+});
+
+router.post("/update-post/:id" , isLoggedin ,async (req,res)=> {
+  try {
+res.send("updatede")
+
+    
+  } catch (error) {
+    res.send(error);
+  }
+})
+
+// --- update-post --- 
 
 
 // --- updata-user ---
@@ -171,6 +239,7 @@ router.post("/edit/:id" ,isLoggedin , async function(req,res){
   }
  
 })
+
 
 // --- updata-user ---
 
@@ -223,16 +292,28 @@ router.post("/reset-password/:id" ,isLoggedin , async function(req,res){
 
 
 
-router.get("/delete-account/:id" ,async (req,res)=>{
+router.get("/delete-account/:id" ,isLoggedin,async (req,res)=>{
 
   try {
 
     const deleteuser = await user.findByIdAndDelete(req.params.id);
     if (deleteuser.profileimage !== "default.jpg" ){
 
-      fs.unlinkSync(path.join(__dirname,".." , "public" , 'images' , req.user.profileimage))
+      fs.unlinkSync(path.join(__dirname,".." , "public" , 'images' , deleteuser.profileimage
+
+      ));
 
     }
+
+    deleteuser.posts.forEach(async (postid) => {
+      const deletepost = await Post.findByIdAndDelete(postid);
+      console.log(deletepost);
+      fs.unlinkSync(
+        path.join(__dirname , ".." ,"public" , "images" , deletepost.media
+
+        )
+      )
+    })
 
 
     res.redirect("/login")
@@ -305,7 +386,7 @@ router.post("/forget-password/:id" , async function(req,res){
 
 // --- change profile image ---
 
-router.post("/change-image/:id" ,isLoggedin, uploads, async (req,res)=>{
+router.post("/change-image/:id" ,isLoggedin, uploads.single("profileimage"), async (req,res)=>{
 
   // res.json(req.body);
   try {
@@ -328,25 +409,62 @@ router.post("/change-image/:id" ,isLoggedin, uploads, async (req,res)=>{
 
 // --- change profile image ---
 
+// --- likes --- 
+
+router.get("/likes/:postid" ,isLoggedin, async (req,res)=>{
+  try {
+
+    const post = await Post.findById(req.params.postid);
+
+    if(post.likes.includes(req.user._id)){
+      post.likes = post.likes.filter(
+        (udi)=> {
+          udi != req.user.id
+        });
+    } else{
+      post.likes.push(req.user._id);
+    }
+
+    await post.save();
+    res.redirect("/profile")
+    
+  } catch (error) {
+    res.send(error);
+  }
+})
+
+// --- likes ---
+
+
+
 
 // --- add post ---
 
 router.get("/Add_Post" , isLoggedin,async  (req,res)=>{
-  try {
+
 
    res.render("Addpost",{user : req.user});
     
-  } catch (error) {
-    res.send(error);
-    
-  }
+  
 })
 
-router.post("/Add_post", isLoggedin, async (req,res)=>{
+router.post("/Add_post/", isLoggedin ,uploads.single("media"), async (req,res)=>{
   try {
-    
+    const newPost = new Post({
+      title : req.body.title ,
+      media : req.file.filename ,
+      user : req.user._id ,
+    });
+
+    req.user.posts.push(newPost._id);
+
+    await newPost.save();
+    await req.user.save();
+
+    res.redirect("/profile");
+
   } catch (error) {
-    
+    res.send(error);
   }
 })
 
