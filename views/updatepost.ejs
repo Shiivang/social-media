@@ -12,12 +12,12 @@
   <!-- image  -->
 
 
-  <form class="hidden in-img" action="/change-image/" method="post" enctype="multipart/form-data">
-    <input class="new-image" type="file" name="profileimage" >  </form>
+  <form class="hidden in-img" action="/post-image/<%= post._id %>" method="post" enctype="multipart/form-data">
+    <input class="new-image" type="file" name="media" >  </form>
     
 
-  <div class="  w-1/2 m-auto mb-10 h-[40vh] flex flex-col justify-center  text-center ">
-    <img class="old-image w-[40%] h-[90%] rounded bg-yellow-300 mb-2 mt-2 object-cantain self-center" src="/images/<%= post.media %>" alt="">
+  <div class="  w-1/2 m-auto mb-10 mt-10  h-[40vh] flex flex-col justify-center  text-center ">
+    <img class="old-image w-[20vw] h-[40vh] rounded  object-cover self-center" src="/images/<%= post.media %>" alt="">
     <div class="   ">
       <h2 class=" text-5xl  text-yellow-200 "><%= post.title %></h2>
 
@@ -32,7 +32,7 @@
 
   <!-- edit page form -->
   
-  <form action="/update-post/" method="post" class="w-full  text-center">
+  <form action="/update-post/<%= post._id %>" method="post" class="w-full  text-center">
 
     <!-- edit page inputs  -->
 

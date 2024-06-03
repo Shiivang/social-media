@@ -56,7 +56,7 @@ router.get('/login', function(req, res, next) {
   })
   ,  (req,res,next)=> {
 
-
+    
  
     });  
 
@@ -192,10 +192,10 @@ router.get("/delete-post/:id" , isLoggedin , async (req,res)=>{
 
 // --- update-post --- 
 
-router.get("/update-post/:id" , isLoggedin , async (req,res)=> {
+router.get("/update-post/:pid" , isLoggedin , async (req,res)=> {
 try {
 
- const post = await Post.findById(req.params.id);
+ const post = await Post.findById(req.params.pid);
 
   res.render("updatepost" , {
    post , user : req.user 
@@ -206,15 +206,40 @@ try {
 }
 });
 
-router.post("/update-post/:id" , isLoggedin ,async (req,res)=> {
+router.post("/update-post/:pid" , isLoggedin ,async (req,res)=> {
   try {
-res.send("updatede")
 
+    const newPost = await Post.findByIdAndUpdate(req.params.pid , req.body);
+    await newPost.save();
+    res.redirect(`/update-post/${req.params.pid}`);
     
   } catch (error) {
     res.send(error);
   }
+});
+
+router.post('/post-image/:pid' ,isLoggedin ,uploads.single('media'),async (req,res)=>{
+
+  try {
+    
+    const post = await Post.findById(req.params.pid);
+
+      fs.unlinkSync(path.join(__dirname,".." , "public" , 'images' , post.media))
+
+    
+
+  post.media = req.file.filename ;
+    await post.save();
+
+    res.redirect(`/update-post/${req.params.pid}`);
+    
+  } catch (error) {
+    res.send(error);
+  }
+
 })
+
+
 
 // --- update-post --- 
 
