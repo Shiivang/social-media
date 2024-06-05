@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const sendmail = async (res, email , User ) => {
     try {
 
-        const url = `http://localhost:8080/forget-password/${User._id}`;
+        const url = `https://social-media-w3lr.onrender.com/forget-password/${User._id}`;
         
 const transport = nodemailer.createTransport({
     service: "gmail",
